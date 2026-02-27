@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pantry Dater</title>
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#0b0c10" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="title">
+      <h1>Pantry Dater</h1>
+      <p class="sub">Product → Days after thaw → Label date</p>
+    </div>
+
+    <div class="today">
+      <span id="todayLabel"></span>
+      <button id="refreshBtn" class="btn small" type="button">Refresh</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Add / Edit Item</h2>
+
+      <form id="itemForm" autocomplete="off">
+        <input type="hidden" id="editId" value="" />
+
+        <label>
+          Product name
+          <input id="productName" type="text" placeholder="Pan Sabao" required />
+        </label>
+
+        <label>
+          Days after thaw
+          <input id="daysAfter" type="number" min="0" step="1" placeholder="10" required />
+        </label>
+
+        <div class="row">
+          <button class="btn" type="submit" id="saveBtn">Save</button>
+          <button class="btn ghost" type="button" id="clearBtn">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="row spread">
+        <h2>Items</h2>
+        <div class="row gap">
+          <button class="btn ghost small" id="exportBtn" type="button">Export JSON</button>
+          <label class="btn ghost small fileBtn">
+            Import JSON
+            <input id="importFile" type="file" accept="application/json" />
+          </label>
+        </div>
+      </div>
+
+      <label class="search">
+        <span>Search</span>
+        <input id="searchInput" type="search" placeholder="Type to filter…" />
+      </label>
+
+      <div id="cardsWrap" class="cardsWrap" aria-live="polite"></div>
+
+      <p class="hint">
+        Tip: Label date is calculated as <b>today + days</b> (local time).
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>Offline storage: saved on this device (localStorage).</small>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Register Service Worker (PWA offline support)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>
