@@ -1,5 +1,5 @@
 // Simple cache-first Service Worker for Pantry Dater
-const CACHE_NAME = "pantry-dater-v2";
+const CACHE_NAME = "pantry-dater-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -7,8 +7,8 @@ const ASSETS = [
   "./app.js",
   "./data.json",
   "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {
