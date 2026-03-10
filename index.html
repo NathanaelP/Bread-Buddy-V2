@@ -78,6 +78,45 @@
         Tip: Label date is calculated as <b>today + days</b> (local time).
       </p>
     </section>
+    <section class="card" id="prodSection">
+      <h2>Production Calculator</h2>
+
+      <div class="prodInputRow">
+        <label>
+          Total Loaves
+          <input id="totalLoaves" type="number" min="0" step="1" placeholder="320" />
+        </label>
+        <label>
+          Morning %
+          <input id="morningPct" type="number" min="0" max="100" step="0.1" placeholder="54" />
+        </label>
+      </div>
+
+      <div id="allocWrap" class="allocWrap"></div>
+
+      <div class="row spread" style="margin-top:14px">
+        <p class="metaLabel" style="margin:0">Bread Types</p>
+        <button id="addTypeBtn" class="btn small ghost" type="button">+ Add Type</button>
+      </div>
+
+      <form id="typeForm" autocomplete="off" style="display:none; margin-top:10px">
+        <input type="hidden" id="typeEditId" value="" />
+        <label>
+          Name
+          <input id="typeName" type="text" placeholder="White" required />
+        </label>
+        <label>
+          % of Total
+          <input id="typePct" type="number" min="0" max="100" step="0.1" placeholder="61" required />
+        </label>
+        <div class="row">
+          <button class="btn" type="submit" id="saveTypeBtn">Save Type</button>
+          <button class="btn ghost" type="button" id="cancelTypeBtn">Cancel</button>
+        </div>
+      </form>
+
+      <div id="typesWrap" class="typesWrap"></div>
+    </section>
   </main>
 
   <footer class="footer">
@@ -85,6 +124,7 @@
   </footer>
 
   <script src="app.js"></script>
+  <script src="production.js"></script>
   <script>
     // Register Service Worker (PWA offline support)
     if ("serviceWorker" in navigator) {
