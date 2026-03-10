@@ -88,8 +88,8 @@ function renderAlloc() {
   let sumLoaves = 0, sumMorning = 0, sumAfternoon = 0;
 
   for (const t of types) {
-    const loaves   = Math.round(total * (t.pct / 100));
-    const morning  = Math.round(loaves * (morningPct / 100));
+    const loaves   = Math.round(total * (t.pct / 100) / 10) * 10;
+    const morning  = Math.round(loaves * (morningPct / 100) / 10) * 10;
     const afternoon = loaves - morning;
 
     sumLoaves   += loaves;

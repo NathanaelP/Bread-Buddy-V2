@@ -305,6 +305,39 @@ input:focus{
   margin-top:10px;
 }
 
+/* Collapsible card (details/summary) */
+details.collapsible > summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  user-select:none;
+}
+details.collapsible > summary::-webkit-details-marker{ display:none; }
+details.collapsible > summary::marker{ display:none; }
+details.collapsible > summary::after{
+  content:'▸';
+  color:var(--muted);
+  font-size:13px;
+  transition:transform .2s ease;
+  flex-shrink:0;
+}
+details.collapsible[open] > summary::after{
+  transform:rotate(90deg);
+}
+details.collapsible > summary .card-title{
+  font-size:17px;
+  font-weight:700;
+  color:var(--text);
+  margin:0;
+}
+details.collapsible[open] > summary{
+  margin-bottom:14px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line);
+}
+
 .footer{
   padding:14px 16px;
   color:var(--muted);
