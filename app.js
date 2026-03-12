@@ -13,6 +13,7 @@ const daysAfter = el("daysAfter");
 const clearBtn = el("clearBtn");
 
 const searchInput = el("searchInput");
+const searchClear = el("searchClear");
 const cardsWrap = el("cardsWrap");
 
 const exportBtn = el("exportBtn");
@@ -211,7 +212,15 @@ itemForm.addEventListener("submit", (e) => {
 clearBtn.addEventListener("click", resetForm);
 
 searchInput.addEventListener("input", () => {
+  searchInput.closest(".searchWrap").classList.toggle("has-text", searchInput.value.length > 0);
   render(loadItems());
+});
+
+searchClear.addEventListener("click", () => {
+  searchInput.value = "";
+  searchInput.closest(".searchWrap").classList.remove("has-text");
+  render(loadItems());
+  searchInput.focus();
 });
 
 cardsWrap.addEventListener("click", (e) => {
