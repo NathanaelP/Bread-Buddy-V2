@@ -111,7 +111,10 @@
 
       <label class="search">
         <span>Search</span>
-        <input id="searchInput" type="search" placeholder="Type to filter…" />
+        <div class="searchWrap">
+          <input id="searchInput" type="search" placeholder="Type to filter…" />
+          <button id="searchClear" class="searchClear" type="button" aria-label="Clear search">✕</button>
+        </div>
       </label>
 
       <div id="cardsWrap" class="cardsWrap" aria-live="polite"></div>
