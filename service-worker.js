@@ -1,5 +1,5 @@
 // Simple cache-first Service Worker for Pantry Dater
-const CACHE_NAME = "pantry-dater-v7";
+const CACHE_NAME = "pantry-dater-v8";
 const ASSETS = [
   "./",
   "./index.html",
