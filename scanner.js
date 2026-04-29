@@ -102,18 +102,20 @@
     animFrame = requestAnimationFrame(scan);
   }
 
-  // ---- Quagga2 strategy ----
+  // ---- Quagga2 strategy — Quagga manages camera itself ----
 
-  function runQuagga(stream) {
+  function runQuagga() {
     const video = document.getElementById('scanVideo');
-    video.srcObject = stream;
-    video.play();
 
     Quagga.init({
       inputStream: {
         type: 'LiveStream',
         target: video,
-        constraints: { facingMode: 'environment' },
+        constraints: {
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
       },
       decoder: {
         readers: [
@@ -128,6 +130,11 @@
       locate: true,
     }, (err) => {
       if (err) {
+        if (err.name === 'NotAllowedError') {
+          closeScanner();
+          alert('Camera access was denied. Please allow camera permission and try again.');
+          return;
+        }
         setStatus('Scanner error. Try typing the barcode.');
         console.error('Quagga init error:', err);
         return;
@@ -152,34 +159,32 @@
     showOverlay();
     setStatus('Starting camera…');
 
-    let stream;
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
-      });
-      activeStream = stream;
-    } catch (err) {
-      closeScanner();
-      const msg = err.name === 'NotAllowedError'
-        ? 'Camera access was denied. Please allow camera permission and try again.'
-        : 'Could not access camera: ' + err.message;
-      alert(msg);
-      return;
-    }
-
     // Try native BarcodeDetector first
     if (typeof BarcodeDetector !== 'undefined') {
       try {
-        await runNativeDetector(stream);
-        return;
-      } catch (_) {
-        // fall through to Quagga2
+        const supported = await BarcodeDetector.getSupportedFormats();
+        const formats = FORMATS.filter(f => supported.includes(f));
+        if (formats.length > 0) {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+          });
+          activeStream = stream;
+          await runNativeDetector(stream);
+          return;
+        }
+      } catch (err) {
+        if (err.name === 'NotAllowedError') {
+          closeScanner();
+          alert('Camera access was denied. Please allow camera permission and try again.');
+          return;
+        }
+        // Fall through to Quagga
       }
     }
 
-    // Quagga2 fallback
+    // Quagga2 fallback — let Quagga manage camera access entirely
     if (typeof Quagga !== 'undefined') {
-      runQuagga(stream);
+      runQuagga();
     } else {
       closeScanner();
       alert('Barcode scanning is not supported on this browser. Please type the barcode manually.');
