@@ -90,6 +90,14 @@
           <input id="daysAfter" type="number" min="0" step="1" placeholder="10" required />
         </label>
 
+        <label>
+          Barcode (optional)
+          <div class="barcodeWrap">
+            <input id="barcodeInput" type="text" placeholder="Scan or type…" />
+            <button id="scanFormBtn" class="btn scanBtn" type="button">📷 Scan</button>
+          </div>
+        </label>
+
         <div class="row">
           <button class="btn" type="submit" id="saveBtn">Save</button>
           <button class="btn ghost" type="button" id="clearBtn">Clear</button>
@@ -112,7 +120,8 @@
       <label class="search">
         <span>Search</span>
         <div class="searchWrap">
-          <input id="searchInput" type="search" placeholder="Type to filter…" />
+          <input id="searchInput" type="search" placeholder="Type or scan to filter…" />
+          <button id="scanSearchBtn" class="scanSearchBtn" type="button" aria-label="Scan barcode to search">📷</button>
           <button id="searchClear" class="searchClear" type="button" aria-label="Clear search">✕</button>
         </div>
       </label>
@@ -129,8 +138,10 @@
     <small>Offline storage: saved on this device (localStorage).</small>
   </footer>
 
+  <script src="quagga.min.js"></script>
   <script src="app.js"></script>
   <script src="production.js"></script>
+  <script src="scanner.js"></script>
   <script>
     // Register Service Worker (PWA offline support)
     if ("serviceWorker" in navigator) {
