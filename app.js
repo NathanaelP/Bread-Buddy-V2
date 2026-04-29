@@ -20,7 +20,7 @@ const exportBtn = el("exportBtn");
 const importFile = el("importFile");
 
 function startOfLocalDay(d = new Date()) {
-  // Normalize so adding days doesn’t drift when DST changes
+  // Normalize so adding days doesn't drift when DST changes
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
@@ -54,6 +54,7 @@ function loadItems() {
         id: x.id,
         name: String(x.name ?? "").trim(),
         days: Number.isFinite(Number(x.days)) ? Number(x.days) : 0,
+        barcode: typeof x.barcode === "string" ? x.barcode : "",
         createdAt: x.createdAt ? String(x.createdAt) : new Date().toISOString()
       }));
   } catch {
@@ -79,7 +80,8 @@ function render(items) {
   const filtered = q
     ? items.filter(it =>
         it.name.toLowerCase().includes(q) ||
-        String(it.days).includes(q)
+        String(it.days).includes(q) ||
+        it.barcode.toLowerCase().includes(q)
       )
     : items;
 
@@ -140,6 +142,7 @@ function resetForm() {
   editId.value = "";
   productName.value = "";
   daysAfter.value = "";
+  el("barcodeInput").value = "";
   productName.focus();
   el("saveBtn").textContent = "Save";
 }
@@ -167,6 +170,7 @@ async function ensurePrefill() {
         id: uuid(),
         name: String(x.name ?? "").trim(),
         days: Number.isFinite(Number(x.days)) ? Number(x.days) : 0,
+        barcode: typeof x.barcode === "string" ? x.barcode : "",
         createdAt: new Date().toISOString()
       }))
       .filter(x => x.name.length > 0);
@@ -201,6 +205,7 @@ itemForm.addEventListener("submit", (e) => {
     id,
     name,
     days,
+    barcode: el("barcodeInput").value.trim(),
     createdAt: new Date().toISOString()
   };
 
@@ -223,6 +228,20 @@ searchClear.addEventListener("click", () => {
   searchInput.focus();
 });
 
+el("scanFormBtn").addEventListener("click", () => {
+  openScanner((value) => {
+    el("barcodeInput").value = value;
+  });
+});
+
+el("scanSearchBtn").addEventListener("click", () => {
+  openScanner((value) => {
+    searchInput.value = value;
+    searchInput.closest(".searchWrap").classList.add("has-text");
+    render(loadItems());
+  });
+});
+
 cardsWrap.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -237,6 +256,7 @@ cardsWrap.addEventListener("click", (e) => {
     editId.value = item.id;
     productName.value = item.name;
     daysAfter.value = String(item.days);
+    el("barcodeInput").value = item.barcode ?? "";
     el("saveBtn").textContent = "Update";
     productName.focus();
   }
@@ -280,6 +300,7 @@ importFile.addEventListener("change", async () => {
       id: typeof x.id === "string" ? x.id : uuid(),
       name: String(x.name ?? "").trim(),
       days: Number.isFinite(Number(x.days)) ? Number(x.days) : 0,
+      barcode: typeof x.barcode === "string" ? x.barcode : "",
       createdAt: x.createdAt ? String(x.createdAt) : new Date().toISOString()
     })).filter(x => x.name.length > 0);
 

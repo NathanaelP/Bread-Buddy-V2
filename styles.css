@@ -149,7 +149,7 @@ input:focus{
 input[type="search"]::-webkit-search-cancel-button{ display:none; }
 
 .searchWrap{ position:relative; }
-.searchWrap input[type="search"]{ padding-right:40px; }
+.searchWrap input[type="search"]{ padding-right:72px; }
 .searchClear{
   position:absolute;
   right:10px;
@@ -168,6 +168,68 @@ input[type="search"]::-webkit-search-cancel-button{ display:none; }
 }
 .searchWrap.has-text .searchClear{ display:flex; align-items:center; justify-content:center; }
 .searchClear:hover{ color:var(--text); }
+
+/* Scan button inside search field */
+.scanSearchBtn{
+  position:absolute;
+  right:38px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  font-size:18px;
+  cursor:pointer;
+  padding:4px;
+  line-height:1;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Barcode input row in form */
+.barcodeWrap{ display:flex; gap:8px; }
+.barcodeWrap input{ flex:1; min-width:0; }
+.scanBtn{ flex-shrink:0; white-space:nowrap; font-size:13px; padding:10px 12px; }
+
+/* Camera overlay */
+#scanOverlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:1000;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+#scanVideo{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.scanFrame{
+  position:relative;
+  z-index:1;
+  width:260px;
+  height:160px;
+  border:2px solid var(--accent);
+  border-radius:12px;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.55);
+}
+#scanStatus{
+  position:relative;
+  z-index:1;
+  color:#fff;
+  font-size:14px;
+  margin-top:20px;
+  text-align:center;
+  padding:0 24px;
+}
+#scanCancel{
+  position:relative;
+  z-index:1;
+  margin-top:16px;
+}
 
 /* Card list */
 .cardsWrap{
