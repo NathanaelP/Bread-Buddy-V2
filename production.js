@@ -85,15 +85,29 @@ function renderAlloc() {
   header.innerHTML = `<span>Type</span><span>%</span><span>Total</span><span>Morning</span><span>Afternoon</span>`;
   wrap.appendChild(header);
 
+  // Largest-remainder method: floor each type to nearest 10, then give
+  // any missing 10s to the types that were shorted the most. This ensures
+  // the sum always equals the entered total rather than drifting due to
+  // independent rounding errors on each type.
+  const exactLoaves = types.map(t => total * (t.pct / 100));
+  const baseLoaves  = exactLoaves.map(e => Math.floor(e / 10) * 10);
+  const remainders  = exactLoaves.map((e, i) => e - baseLoaves[i]);
+  const baseSum     = baseLoaves.reduce((s, v) => s + v, 0);
+  const extras      = Math.max(0, Math.round((total - baseSum) / 10));
+  const order       = remainders.map((r, i) => ({ r, i })).sort((a, b) => b.r - a.r);
+  const loavesArr   = [...baseLoaves];
+  for (let k = 0; k < extras && k < order.length; k++) loavesArr[order[k].i] += 10;
+
   let sumLoaves = 0, sumMorning = 0, sumAfternoon = 0;
 
-  for (const t of types) {
-    const loaves   = Math.round(total * (t.pct / 100) / 10) * 10;
-    const morning  = Math.round(loaves * (morningPct / 100) / 10) * 10;
+  for (let i = 0; i < types.length; i++) {
+    const t = types[i];
+    const loaves    = loavesArr[i];
+    const morning   = Math.round(loaves * (morningPct / 100) / 10) * 10;
     const afternoon = loaves - morning;
 
-    sumLoaves   += loaves;
-    sumMorning  += morning;
+    sumLoaves    += loaves;
+    sumMorning   += morning;
     sumAfternoon += afternoon;
 
     const row = document.createElement("div");
