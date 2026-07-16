@@ -138,6 +138,21 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
+async function lookupBarcode(barcode) {
+  try {
+    const res = await fetch(
+      `https://world.openfoodfacts.org/api/v0/product/${encodeURIComponent(barcode)}.json`,
+      { cache: "no-cache" }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.status !== 1) return null;
+    return (data.product?.product_name || data.product?.brands || "").trim() || null;
+  } catch {
+    return null;
+  }
+}
+
 function resetForm() {
   editId.value = "";
   productName.value = "";
@@ -229,8 +244,33 @@ searchClear.addEventListener("click", () => {
 });
 
 el("scanFormBtn").addEventListener("click", () => {
-  openScanner((value) => {
+  openScanner(async (value) => {
     el("barcodeInput").value = value;
+
+    // If barcode already exists in the local list, pre-fill for editing
+    const items = loadItems();
+    const existing = items.find(it => it.barcode === value);
+    if (existing) {
+      editId.value = existing.id;
+      productName.value = existing.name;
+      daysAfter.value = String(existing.days);
+      el("saveBtn").textContent = "Update";
+      productName.focus();
+      return;
+    }
+
+    // Look up on Open Food Facts to auto-fill the product name
+    const defaultPlaceholder = productName.placeholder;
+    productName.placeholder = "Looking up product…";
+    const name = await lookupBarcode(value);
+    productName.placeholder = defaultPlaceholder;
+
+    if (name) {
+      productName.value = name;
+      daysAfter.focus();
+    } else {
+      productName.focus();
+    }
   });
 });
 
